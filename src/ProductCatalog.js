@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function ProductCatalog() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const userRole = localStorage.getItem('userRole'); // 'customer' or 'owner'
+  const userRole = localStorage.getItem('userRole'); 
 
   // Fetch products from the backend
   useEffect(() => {
