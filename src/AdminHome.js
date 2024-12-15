@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Product from './Product.js';
-
 import { Link } from 'react-router-dom';
 
 function AdminHome({ onLogout }) {
@@ -49,8 +48,6 @@ function AdminHome({ onLogout }) {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-
-      {/* Product List */}
      {/* Product List */}
       <div className="product-grid">
         {filteredProducts.map(product => (
