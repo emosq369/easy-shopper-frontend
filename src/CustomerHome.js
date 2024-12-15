@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
-import Product from "./Product.js";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import Product from './Product.js';
+import { Link } from 'react-router-dom';
 
-function CustomerHome({ onLogout, cart, setCart }) {
+function CustomerHome({ onLogout, cart = [], setCart }) {
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [quantities, setQuantities] = useState({}); // Store quantity for each product separately
 
+
   useEffect(() => {
-    fetch("http://localhost:5001/products")
-      .then((response) => response.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching products", err));
+    fetch('http://localhost:5001/products')
+      .then(response => response.json())
+      .then(data => {setProducts(data)})
+      .catch(err => console.error('Error fetching products', err))
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle quantity change for each product
@@ -30,14 +31,14 @@ function CustomerHome({ onLogout, cart, setCart }) {
 
   // Add product to cart using selected quantity
   const addToCart = (product) => {
-    const quantityToAdd = quantities[product.product_id] || 1; // Default to 1 if no quantity is set
+    const quantityToAdd = quantities[product.id] || 1; // Default to 1 if no quantity is set
     setCart((prevCart) => {
       const existingProduct = prevCart.find(
-        (item) => item.product_id === product.product_id
+        (item) => item.id === product.id
       );
       if (existingProduct) {
         return prevCart.map((item) =>
-          item.product_id === product.product_id
+          item.id === product.id
             ? { ...item, quantity: item.quantity + quantityToAdd }
             : item
         );
@@ -49,9 +50,20 @@ function CustomerHome({ onLogout, cart, setCart }) {
     // Reset the quantity input back to 1 after adding to cart
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
-      [product.product_id]: 1,
+      [product.id]: 1,
     }));
   };
+
+  useEffect(() => {
+    const storedCart = JSON.parse(sessionStorage.getItem('cart'));
+    if (storedCart) {
+      setCart(storedCart);
+    }
+  }, []);
+  
+  useEffect(() => {
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   return (
     <div>
@@ -59,7 +71,7 @@ function CustomerHome({ onLogout, cart, setCart }) {
 
       {/* Navigation Links */}
       <div className="navigation-links">
-        <Link to="/cart">Cart ({cart.length})</Link>
+        <Link to="/cart">Cart ({cart.length})</Link> | 
         <Link to="/orders">Orders</Link>
         <button onClick={onLogout}>Logout</button>
       </div>
@@ -74,23 +86,17 @@ function CustomerHome({ onLogout, cart, setCart }) {
 
       {/* Product List */}
       <div className="product-grid">
-        {filteredProducts.map((product) => (
-          <div key={product.product_id} className="product-card">
-            <img src={product.image_url} alt={product.product_name} />
-            <div className="product-card-content">
-              <h2>{product.product_name}</h2>
-              <p>{product.product_description}</p>
-              <p>Price: ${product.product_price}</p>
-              <p>Quantity Available: {product.product_quantity}</p>
-
+        {filteredProducts.map(product => (
+            <Product key={product.id} product={product}>
               {/* Quantity Input */}
               <input
                 type="number"
                 min="1"
-                value={quantities[product.product_id] || 1} // Default quantity is 1
+                max={product.quantity}
+                value={quantities[product.id] || 1} // Default quantity is 1
                 onChange={(e) =>
                   handleQuantityChange(
-                    product.product_id,
+                    product.id,
                     parseInt(e.target.value)
                   )
                 }
@@ -98,15 +104,14 @@ function CustomerHome({ onLogout, cart, setCart }) {
               />
 
               <button
-                disabled={product.product_quantity === 0}
+                disabled={product.quantity === 0}
                 onClick={() => addToCart(product)}
               >
-                {product.product_quantity === 0
+                {product.quantity === 0
                   ? "Out of Stock"
                   : "Add to Cart"}
               </button>
-            </div>
-          </div>
+            </Product>
         ))}
       </div>
     </div>

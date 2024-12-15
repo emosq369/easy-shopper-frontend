@@ -1,23 +1,27 @@
 import React, { useState } from "react";
+import Product from "./Product.js";
 
 function Cart({ cart, setCart, user_id }) {
   const [message, setMessage] = useState("");
 
   const removeFromCart = (product_id) => {
-    setCart(cart.filter((item) => item.product_id !== product_id));
+    const updatedCart = cart.filter((item) => item.id !== product_id);
+    setCart(updatedCart); //update status of the cart
+    sessionStorage.setItem('cart', JSON.stringify(updatedCart)); // store updated cart
+
   };
 
   const updateQuantity = (product_id, quantity) => {
-    setCart(
-      cart.map((item) =>
-        item.product_id === product_id ? { ...item, quantity: quantity } : item
-      )
+    const updatedCart = cart.map((item) =>
+        item.id === product_id ? { ...item, quantity: quantity } : item
     );
+    setCart(updatedCart); // update status of the cart
+    sessionStorage.setItem('cart', JSON.stringify(updatedCart)); 
   };
 
   const calculateTotal = () => {
     return cart
-      .reduce((total, item) => total + item.product_price * item.quantity, 0)
+      .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2);
   };
 
@@ -29,11 +33,13 @@ function Cart({ cart, setCart, user_id }) {
       return; // Exit early if the cart is empty
     }
 
+    const orderDate = new Date().toISOString();
+
     try {
-      const response = await fetch("http://localhost:5001/orders", {
+      const response = await fetch("http://localhost:5001/neworder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id, cart }),
+        body: JSON.stringify({ user_id, cart, order_date: orderDate, }),
       });
 
       const data = await response.json();
@@ -61,25 +67,23 @@ function Cart({ cart, setCart, user_id }) {
           ← Back to Home
         </a>
       </nav>
+      {/* Show products on cart */}
       {cart.map((item) => (
-        <div key={item.product_id}>
-          <h3>{item.product_name}</h3>
-          <p>{item.description}</p>
-          <p>Price: ${item.product_price}</p>
-          <p>
-            Quantity:
+        <div key={item.id}>
+          <Product product={item}>
+            {/* show quantity and allow change it */}
             <input
               type="number"
               min="1"
               value={item.quantity}
               onChange={(e) =>
-                updateQuantity(item.product_id, parseInt(e.target.value))
+                updateQuantity(item.id, parseInt(e.target.value)) // update quantity
               }
+              style={{ width: "50px", marginRight: "10px" }}
             />
-          </p>
-          <button onClick={() => removeFromCart(item.product_id)}>
-            Remove
-          </button>
+            {/* remove product from cart */}
+            <button onClick={() => removeFromCart(item.id)}>Remove</button>
+          </Product>
         </div>
       ))}
       <h2>Total: ${calculateTotal()}</h2>
