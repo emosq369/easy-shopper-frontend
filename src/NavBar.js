@@ -18,7 +18,6 @@ function NavBar({ cartCount, onLogout }) {
 
       <nav className="navbar">
         <Link to="/cart" className="nav-link">
-          Cart
           <div className="cart-icon">
             <img
               src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
