@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import Product from './Product.js';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Product from "./Product.js";
+import NavBar from "./NavBar.js";
+import "./customerHome.css";
 
 function CustomerHome({ onLogout, cart = [], setCart }) {
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [quantities, setQuantities] = useState({}); // Store quantity for each product separately
 
-
   useEffect(() => {
-    fetch('http://localhost:5001/products')
-      .then(response => response.json())
-      .then(data => {setProducts(data)})
-      .catch(err => console.error('Error fetching products', err))
+    fetch("http://localhost:5001/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((err) => console.error("Error fetching products", err));
   }, []);
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -33,9 +35,7 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
   const addToCart = (product) => {
     const quantityToAdd = quantities[product.id] || 1; // Default to 1 if no quantity is set
     setCart((prevCart) => {
-      const existingProduct = prevCart.find(
-        (item) => item.id === product.id
-      );
+      const existingProduct = prevCart.find((item) => item.id === product.id);
       if (existingProduct) {
         return prevCart.map((item) =>
           item.id === product.id
@@ -55,29 +55,23 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
   };
 
   useEffect(() => {
-    const storedCart = JSON.parse(sessionStorage.getItem('cart'));
+    const storedCart = JSON.parse(sessionStorage.getItem("cart"));
     if (storedCart) {
       setCart(storedCart);
     }
   }, []);
-  
+
   useEffect(() => {
-    sessionStorage.setItem('cart', JSON.stringify(cart));
+    sessionStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   return (
-    <div>
-      <h1>Product Catalog</h1>
-
-      {/* Navigation Links */}
-      <div className="navigation-links">
-        <Link to="/cart">Cart ({cart.length})</Link> | 
-        <Link to="/orders">Orders</Link>
-        <button onClick={onLogout}>Logout</button>
-      </div>
+    <div className="customer-home">
+      <NavBar cartCount={cart.length} onLogout={onLogout} />
 
       {/* Search Bar */}
       <input
+        className="search-bar"
         type="text"
         placeholder="Search products..."
         value={searchQuery}
@@ -86,32 +80,27 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
 
       {/* Product List */}
       <div className="product-grid">
-        {filteredProducts.map(product => (
-            <Product key={product.id} product={product}>
-              {/* Quantity Input */}
-              <input
-                type="number"
-                min="1"
-                max={product.quantity}
-                value={quantities[product.id] || 1} // Default quantity is 1
-                onChange={(e) =>
-                  handleQuantityChange(
-                    product.id,
-                    parseInt(e.target.value)
-                  )
-                }
-                style={{ width: "50px", marginRight: "10px" }}
-              />
+        {filteredProducts.map((product) => (
+          <Product key={product.id} product={product}>
+            {/* Quantity Input */}
+            <input
+              type="number"
+              min="1"
+              max={product.quantity}
+              value={quantities[product.id] || 1} // Default quantity is 1
+              onChange={(e) =>
+                handleQuantityChange(product.id, parseInt(e.target.value))
+              }
+              style={{ width: "50px", marginRight: "10px" }}
+            />
 
-              <button
-                disabled={product.quantity === 0}
-                onClick={() => addToCart(product)}
-              >
-                {product.quantity === 0
-                  ? "Out of Stock"
-                  : "Add to Cart"}
-              </button>
-            </Product>
+            <button
+              disabled={product.quantity === 0}
+              onClick={() => addToCart(product)}
+            >
+              {product.quantity === 0 ? "Out of Stock" : "Add to Cart"}
+            </button>
+          </Product>
         ))}
       </div>
     </div>
