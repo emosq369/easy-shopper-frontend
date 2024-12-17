@@ -7,16 +7,15 @@ function Cart({ cart, setCart, user_id }) {
   const removeFromCart = (product_id) => {
     const updatedCart = cart.filter((item) => item.id !== product_id);
     setCart(updatedCart); //update status of the cart
-    sessionStorage.setItem('cart', JSON.stringify(updatedCart)); // store updated cart
-
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart)); // store updated cart
   };
 
   const updateQuantity = (product_id, quantity) => {
     const updatedCart = cart.map((item) =>
-        item.id === product_id ? { ...item, quantity: quantity } : item
+      item.id === product_id ? { ...item, quantity: quantity } : item
     );
     setCart(updatedCart); // update status of the cart
-    sessionStorage.setItem('cart', JSON.stringify(updatedCart)); 
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   const calculateTotal = () => {
@@ -39,7 +38,7 @@ function Cart({ cart, setCart, user_id }) {
       const response = await fetch("http://localhost:5001/neworder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id, cart, order_date: orderDate, }),
+        body: JSON.stringify({ user_id, cart, order_date: orderDate }),
       });
 
       const data = await response.json();
@@ -76,8 +75,8 @@ function Cart({ cart, setCart, user_id }) {
               type="number"
               min="1"
               value={item.quantity}
-              onChange={(e) =>
-                updateQuantity(item.id, parseInt(e.target.value)) // update quantity
+              onChange={
+                (e) => updateQuantity(item.id, parseInt(e.target.value)) // update quantity
               }
               style={{ width: "50px", marginRight: "10px" }}
             />

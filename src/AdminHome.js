@@ -1,34 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import Product from './Product.js';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Product from "./Product.js";
+import { Link } from "react-router-dom";
 
 function AdminHome({ onLogout }) {
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [message, setMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = () => {
-    fetch('http://localhost:5001/products')
-      .then(response => response.json())
-      .then(data => {setProducts(data)});
+    fetch("http://localhost:5001/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+      });
   };
 
   const deleteProduct = (productId) => {
-    fetch(`http://localhost:5001/deleteproduct/${productId}`, { method: 'DELETE' })
+    fetch(`http://localhost:5001/deleteproduct/${productId}`, {
+      method: "DELETE",
+    })
       .then(() => {
-        setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
-        setMessage("Product deleted succesfully!");
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.id !== productId)
+        );
+        setMessage("Product deleted successfully!");
       })
-      .catch(error => setMessage('Error deleting product: ' + error.message));
+      .catch((error) => setMessage("Error deleting product: " + error.message));
   };
 
-  
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = products.filter((product) =>
+    product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -48,14 +53,12 @@ function AdminHome({ onLogout }) {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-     {/* Product List */}
+      {/* Product List */}
       <div className="product-grid">
-        {filteredProducts.map(product => (
-            <Product key={product.id} product={product}>
-                <button onClick={() => deleteProduct(product.id)}>
-                    Delete
-                </button>
-            </Product>
+        {filteredProducts.map((product) => (
+          <Product key={product.id} product={product}>
+            <button onClick={() => deleteProduct(product.id)}>Delete</button>
+          </Product>
         ))}
       </div>
     </div>
