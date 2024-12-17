@@ -1,50 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import "./order.css";
 
 function Order() {
   const { orderId } = useParams();
-  console.log("Order ID:", orderId);
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
     fetch(`http://localhost:5001/order/${orderId}`)
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setOrder(data);
-      })
+      .then((data) => setOrder(data))
       .catch((err) => console.error("Error fetching order details", err));
   }, [orderId]);
 
   return (
-    <div>
+    <div className="order-container">
+      {/* Back to Orders */}
       <nav>
-        <a
-          href="/orders"
-          style={{ marginBottom: "20px", display: "inline-block" }}
-        >
+        <Link to="/orders" className="back-to-orders">
           ← Back to Orders
-        </a>
+        </Link>
       </nav>
+
+      {/* Order Details */}
       {order ? (
-        <>
-          <h1>Order #{order.order_number}</h1>
-          <p>Status: {order.status}</p>
-          <p>Total: {order.total_price}</p>
-          <h2>Products</h2>
-          <ul>
+        <div>
+          <h1 className="order-header">Order #{order.order_number}</h1>
+          <p>
+            Status: <strong>{order.status}</strong>
+          </p>
+          <p>Total: ${order.total_price}</p>
+
+          <h2 className="products-header">Products</h2>
+          <ul className="products-list">
             {order.products.map((product) => (
-              <li key={product.id}>
+              <li key={product.id} className="product-item">
                 <strong>{product.name}</strong>
                 <p>Description: {product.description}</p>
                 <p>Quantity: {product.quantity}</p>
-                <p>Total: {product.total}</p>
+                <p>Total: ${product.total}</p>
               </li>
             ))}
           </ul>
-        </>
+        </div>
       ) : (
-        <p>Loading Order details...</p>
+        <p className="loading-message">Loading Order details...</p>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import "./orders.css";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -14,45 +15,43 @@ function Orders() {
     } else {
       fetch(`http://localhost:5001/orders/${userId}`)
         .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch orders");
-          }
+          if (!response.ok) throw new Error("Failed to fetch orders");
           return response.json();
         })
-        .then((data) => {
-          setOrders(data);
-        })
+        .then((data) => setOrders(data))
         .catch((err) => console.error("Error fetching orders", err));
     }
   }, [userId, userRole]);
 
   return (
-    <div>
-      <h1>My Orders</h1>
-      {/* Navigation Link to Home */}
+    <div className="orders-container">
+      {/* Back to Home */}
       <nav>
-        <a
-          href="/home"
-          style={{ marginBottom: "20px", display: "inline-block" }}
-        >
+        <Link to="/home" className="back-to-home">
           ← Back to Home
-        </a>
+        </Link>
       </nav>
-      <div>
-        {orders.length === 0 ? (
-          <p>No orders found</p>
-        ) : (
-          orders.map((order) => (
-            <div key={order.id}>
-              <Link to={`/order/${order.id}`}>
+
+      <h1 className="orders-header">My Orders</h1>
+
+      {/* Orders List */}
+      {orders.length === 0 ? (
+        <p className="no-orders">No orders found</p>
+      ) : (
+        <div className="orders-list">
+          {orders.map((order) => (
+            <div key={order.id} className="order-card">
+              <Link to={`/order/${order.id}`} className="order-link">
                 <h3>Order #{order.order_number}</h3>
               </Link>
-              <p>Status: {order.status}</p>
+              <p>
+                Status: <strong>{order.status}</strong>
+              </p>
               <p>Total: ${order.total_price}</p>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

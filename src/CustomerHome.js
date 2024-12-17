@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Product from "./Product.js";
-import { Link } from "react-router-dom";
+import NavBar from "./NavBar.js";
+import "./customerHome.css";
 
 function CustomerHome({ onLogout, cart = [], setCart }) {
   const [products, setProducts] = useState([]);
@@ -17,7 +18,7 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
   }, []);
 
   const filteredProducts = products.filter((product) =>
-    product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle quantity change for each product
@@ -65,18 +66,12 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
   }, [cart]);
 
   return (
-    <div>
-      <h1>Product Catalog</h1>
-
-      {/* Navigation Links */}
-      <div className="navigation-links">
-        <Link to="/cart">Cart ({cart.length})</Link> |
-        <Link to="/orders">Orders</Link>
-        <button onClick={onLogout}>Logout</button>
-      </div>
+    <div className="customer-home">
+      <NavBar cartCount={cart.length} onLogout={onLogout} />
 
       {/* Search Bar */}
       <input
+        className="search-bar"
         type="text"
         placeholder="Search products..."
         value={searchQuery}

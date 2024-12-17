@@ -93,7 +93,7 @@ function AuthenticationForm({ onLoginSuccess }) {
           {/* Email */}
           {formType === "register" && (
             <>
-              <label htmlFor="email">Username</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="email"
                 value={email}
@@ -106,14 +106,22 @@ function AuthenticationForm({ onLoginSuccess }) {
           )}
           {/* Password */}
           <label htmlFor="pass">Password</label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            id="pass"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              id="pass"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🔒" : "👁️"}
+            </span>
+          </div>
           <button type="submit">
             {formType === "login" ? "Sign in" : "Sign Up"}
           </button>
