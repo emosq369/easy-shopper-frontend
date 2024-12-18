@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./addProduct.css";
-import apiURL from './apiConfig';
+import apiURL from './apiConfig.js';
 
 function AddProduct() {
   const [name, setName] = useState("");
