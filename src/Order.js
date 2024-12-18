@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./order.css";
-import apiURL from "./apiConfig";
+import apiURL from './apiConfig.js';
 
 
 function Order() {
