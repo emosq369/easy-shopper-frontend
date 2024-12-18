@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./order.css";
+import apiURL from "./apiConfig";
+
 
 function Order() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5001/order/${orderId}`)
+    fetch(`${apiURL}/order/${orderId}`)
       .then((response) => response.json())
       .then((data) => setOrder(data))
       .catch((err) => console.error("Error fetching order details", err));
