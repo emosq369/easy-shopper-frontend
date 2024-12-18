@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Product from "./Product.js";
 import NavBar from "./NavBar.js";
 import "./customerHome.css";
+import apiURL from './apiConfig.js';
 
 function CustomerHome({ onLogout, cart = [], setCart }) {
   const [products, setProducts] = useState([]);
@@ -9,7 +10,7 @@ function CustomerHome({ onLogout, cart = [], setCart }) {
   const [quantities, setQuantities] = useState({}); // Store quantity for each product separately
 
   useEffect(() => {
-    fetch("http://localhost:5001/products")
+    fetch(`${apiURL}/products`)
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
