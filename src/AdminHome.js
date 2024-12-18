@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Product from "./Product.js";
 import { Link } from "react-router-dom";
 import "./adminHome.css";
+import apiURL from './apiConfig.js';
+
 
 function AdminHome({ onLogout }) {
   const [products, setProducts] = useState([]);
@@ -14,7 +16,7 @@ function AdminHome({ onLogout }) {
 
   // Fetch all products
   const fetchProducts = () => {
-    fetch("http://localhost:5001/products")
+    fetch(`${apiURL}/products`)
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
@@ -27,7 +29,7 @@ function AdminHome({ onLogout }) {
 
   // Delete a product
   const deleteProduct = (productId) => {
-    fetch(`http://localhost:5001/deleteproduct/${productId}`, {
+    fetch(`${apiURL}/deleteproduct/${productId}`, {
       method: "DELETE",
     })
       .then(() => {
