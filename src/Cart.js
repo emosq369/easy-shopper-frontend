@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./cart.css";
+import apiURL from './apiConfig.js';
 
 function Cart({ cart, setCart, user_id }) {
   const [message, setMessage] = useState("");
@@ -37,7 +38,7 @@ function Cart({ cart, setCart, user_id }) {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/neworder", {
+      const response = await fetch(`${apiURL}/neworder`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id, cart }),
