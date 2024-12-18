@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./orders.css";
+import apiURL from "./apiConfig";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ function Orders() {
     if (!userId || userRole !== "customer") {
       setIsAuthenticated(false);
     } else {
-      fetch(`http://localhost:5001/orders/${userId}`)
+      fetch(`${apiURL}/orders/${userId}`)
         .then((response) => {
           if (!response.ok) throw new Error("Failed to fetch orders");
           return response.json();
