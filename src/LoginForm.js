@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./authForm.css";
+import apiURL from './apiConfig.js';
 
 function AuthenticationForm({ onLoginSuccess }) {
   const [formType, setFormType] = useState("login");
@@ -12,7 +13,7 @@ function AuthenticationForm({ onLoginSuccess }) {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/login", {
+      const response = await fetch(`${apiURL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +44,7 @@ function AuthenticationForm({ onLoginSuccess }) {
   async function handleRegister(e) {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/register", {
+      const response = await fetch(`${apiURL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
