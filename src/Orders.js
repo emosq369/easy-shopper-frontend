@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./orders.css";
-import apiURL from "./apiConfig";
+import apiURL from './apiConfig.js';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
