@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./addProduct.css";
+import apiURL from './apiConfig';
 
 function AddProduct() {
   const [name, setName] = useState("");
@@ -30,7 +31,7 @@ function AddProduct() {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/addproduct", {
+      const response = await fetch(`${apiURL}/addproduct`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
